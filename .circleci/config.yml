@@ -54,10 +54,10 @@ workflows:
     jobs:
       - setup_env
       - build_container
-          requires:
+          requires
             - setup_env
-      - run_container:
-          requires:
+      - run_container
+          requires
             - setup_env
             - build_container
 
