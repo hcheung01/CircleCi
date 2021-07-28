@@ -16,4 +16,4 @@ workflows:
   workflow:
     jobs:
       - build_image:
-          image_name: myNewTestImage
+          image_name: my_test_image_from_workflows
