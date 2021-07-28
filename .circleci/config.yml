@@ -27,5 +27,5 @@ jobs:
 workflows:
   workflow:
     jobs:
-      - build_container:
-      - run_container:
+      - build_container
+      - run_container
