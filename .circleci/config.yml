@@ -76,10 +76,10 @@ jobs:
       - run: docker images
       - run: 
           name: Testing First Container
-          command: docker run --log-driver -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+          command: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
       - run:
           name: Testing Second Container
-          command: docker run --log-driver -it --rm << pipeline.parameters.image-name >>2:<<  pipeline.parameters.image-tag  >>
+          command: docker run -it --rm << pipeline.parameters.image-name >>2:<<  pipeline.parameters.image-tag  >>
 
   push_image:
     description: Pushing tar images to Docker Hub registry using CircleCi Context
@@ -116,6 +116,8 @@ workflows:
             - build_container
             - build_container2
       - push_image:
+          context:
+            docker
           requires:
             - build_container
 
