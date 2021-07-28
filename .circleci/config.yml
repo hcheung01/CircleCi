@@ -56,12 +56,13 @@ jobs:
             uname -a
             docker info
             docker images
-run_container:
-  machine: true
-  description: Fan in with build_container and build_container2
-  steps:
-    - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
-    - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+            
+  run_container:
+    machine: true
+    description: Fan in with build_container and build_container2
+    steps:
+      - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+      - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
 
 
 workflows:
