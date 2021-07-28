@@ -38,30 +38,30 @@ jobs:
             docker info
             docker images
 
-    build_container2:
-      machine: true
-      description: Fan out with build_container job
-      steps:
-        - checkout
-        - run: whoami
-        - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> .
-        - run: docker info
-        - run: docker images
-        - run:
-            name: Test multiple commands with command
-            command: |
-              whoami
-              ls -li *
-              pwd
-              uname -a
-              docker info
-              docker images
-  run_container:
+  build_container2:
     machine: true
-    description: Fan in with build_container and build_container2
+    description: Fan out with build_container job
     steps:
-      - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
-      - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+      - checkout
+      - run: whoami
+      - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-name >>2:<< pipeline.parameters.image-tag >> .
+      - run: docker info
+      - run: docker images
+      - run:
+          name: Test multiple commands with command
+          command: |
+            whoami
+            ls -li *
+            pwd
+            uname -a
+            docker info
+            docker images
+run_container:
+  machine: true
+  description: Fan in with build_container and build_container2
+  steps:
+    - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+    - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
 
 
 workflows:
