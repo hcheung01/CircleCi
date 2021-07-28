@@ -9,6 +9,17 @@ parameters:
     default: "latest"
 
 jobs:
+  setup_env:
+    machine: true
+    description: Setup CircleCi client environment
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          command: |
+            echo "Setup Environment Stage"            
+              
   build_container:
     machine: true
     steps:
@@ -17,16 +28,103 @@ jobs:
       - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> .
       - run: docker info
       - run: docker images
-  run_container:
-    machine: true
-    steps:
-      - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
-      - run: docker images
-      - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >>
+      - run:
+          name: Test multiple commands with command
+          command: |
+            whoami
+            ls -li *
+            pwd
+            uname -a
+            docker info
+            docker images
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
 
+  build_container2:
+    machine: true
+    description: Fan out with build_container job
+    steps:
+      - checkout
+      - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-name >>2:<< pipeline.parameters.image-tag >> .
+      - run: docker info
+      - run: docker images
+      - run:
+          name: Archive Docker image
+          command: docker save -o image2.tar << pipeline.parameters.image-name >>2:<< pipeline.parameters.image-tag >>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image2.tar
+
+  test_containers:
+    machine: true
+    description: Fan in with build_container and build_container2
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Load archived Docker image2
+          command: docker load -i /tmp/workspace/image2.tar
+      - run: docker images
+      - run: 
+          name: Testing First Container
+          command: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+      - run:
+          name: Testing Second Container
+          command: docker run -it --rm << pipeline.parameters.image-name >>2:<<  pipeline.parameters.image-tag  >>
+
+  test_docker_hub:
+    description: Pulling images from my Docker Hub using credentials and CircleCi Context
+    docker:
+      - image: hcheung01/portfolio_website:latest
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Pull image.tar from build image job's workspace, unpack and push to Docker hub
+          command: |
+            docker load -i /tmp/workspace/image.tar
+            docker images
+            docker tag << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> $DOCKER_USERNAME/circleci/circleci_image:v1.0
+            docker images
+            docker image push $DOCKER_USERNAME/circleci/circleci_image:v1.0
+            docker image ls -a $DOCKER_USERNAME/circleci
+      - setup_remote_docker:
+          version: "20.10.6"
+          docker_layer_caching: true
+      - store_artifacts:
+          path: /tmp/workspace/image.tar
 
 workflows:
-  build_and_run:
+  build_and_test:
     jobs:
-      - build_container
-      - run_container
+      - setup_env
+      - build_container:
+          requires:
+            - setup_env
+      - build_container2:
+          requires:
+            - setup_env
+      - test_containers:
+          requires:
+            - build_container
+            - build_container2
+      - test_docker_hub:
+          requires:
+            - build_container
+
+
+
+        
