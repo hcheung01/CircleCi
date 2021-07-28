@@ -37,6 +37,10 @@ jobs:
             uname -a
             docker info
             docker images
+      - persist_to_workspace:
+          root: .
+          paths:
+            - echo-output
 
   build_container2:
     machine: true
@@ -56,11 +60,17 @@ jobs:
             uname -a
             docker info
             docker images
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - echo-output
 
   run_container:
     machine: true
     description: Fan in with build_container and build_container2
     steps:
+      - attch_workspace:
+        at: .
       - run: docker images
       - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
       - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
