@@ -18,4 +18,4 @@ COPY src/ /tmp/src/
 COPY test/ /tmp/test/
 
 WORKDIR /tmp/test
-CMD ["python", "-m", "pytest", "math.py"]
+CMD ["python", "-m", "pytest", "--tb=auto", "-v", "math.py"]
