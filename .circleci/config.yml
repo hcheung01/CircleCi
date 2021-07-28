@@ -17,7 +17,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          command:
+          command: |
             pip install --upgrade pip
             pip install virtualenv
             virtualenv -p python3 myEnv
