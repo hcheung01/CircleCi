@@ -29,6 +29,9 @@ jobs:
       - run: docker info
       - run: docker images
       - run:
+          name: Archive Docker image
+          command: docker save -o image.tar << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >>
+      - run:
           name: Test multiple commands with command
           command: |
             whoami
@@ -38,9 +41,9 @@ jobs:
             docker info
             docker images
       - persist_to_workspace:
-          root: /home/circleci
+          root: .
           paths:
-            - echo-output
+            - ./image.tar
 
   build_container2:
     machine: true
@@ -52,6 +55,9 @@ jobs:
       - run: docker info
       - run: docker images
       - run:
+          name: Archive Docker image
+          command: docker save -o image2.tar << pipeline.parameters.image-name >>2:<< pipeline.parameters.image-tag >>
+      - run:
           name: Test multiple commands with command
           command: |
             whoami
@@ -60,17 +66,23 @@ jobs:
             uname -a
             docker info
             docker images
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - echo-output
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image2.tar
 
   run_container:
     machine: true
     description: Fan in with build_container and build_container2
     steps:
       - attach_workspace:
-          at: .
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/image.tar
+      - run:
+          name: Load archived Docker image2
+          command: docker load -i /tmp/image2.tar
       - run: docker images
       - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
       - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
