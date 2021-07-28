@@ -50,22 +50,12 @@ jobs:
     description: Fan out with build_container job
     steps:
       - checkout
-      - run: whoami
       - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-name >>2:<< pipeline.parameters.image-tag >> .
       - run: docker info
       - run: docker images
       - run:
           name: Archive Docker image
           command: docker save -o image2.tar << pipeline.parameters.image-name >>2:<< pipeline.parameters.image-tag >>
-      - run:
-          name: Test multiple commands with command
-          command: |
-            whoami
-            ls -li *
-            pwd
-            uname -a
-            docker info
-            docker images
       - persist_to_workspace:
           root: .
           paths:
@@ -79,10 +69,10 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/image.tar
+          command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Load archived Docker image2
-          command: docker load -i /tmp/image2.tar
+          command: docker load -i /tmp/workspace/image2.tar
       - run: docker images
       - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
       - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
