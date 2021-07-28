@@ -9,6 +9,22 @@ parameters:
     default: "latest"
 
 jobs:
+  setup_env:
+    machine: true
+    name: Setup CircleCi client environment
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          command:
+            pip install --upgrade pip
+            pip install virtualenv
+            virtualenv -p python3 myEnv
+            source myEnv/bin/activate
+            ls -li
+            deactivate
+              
   build_container:
     machine: true
     steps:
@@ -17,6 +33,15 @@ jobs:
       - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> .
       - run: docker info
       - run: docker images
+      - run:
+          name: Test multiple commands with command
+          command: |
+            whoami
+            ls -li *
+            pwd
+            uname -a
+            docker info
+            docker images
   run_container:
     machine: true
     steps:
@@ -27,9 +52,13 @@ jobs:
 workflows:
   build_and_test:
     jobs:
+      - setup_env
       - build_container
+          requires:
+            - setup_env
       - run_container:
           requires:
+            - setup_env
             - build_container
 
 
