@@ -1,10 +1,10 @@
 version: 2.1
 
 parameters:
-  image_name:
+  image-name:
     type: string
     default: "test_image"
-  image_tag:
+  image-tag:
     type: string
     default: "latest"
 
@@ -28,4 +28,9 @@ workflows:
   workflow:
     jobs:
       - build_container
-      - run_container
+      - run_container:
+        requires:
+          - build_container
+
+
+        
