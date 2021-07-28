@@ -11,7 +11,7 @@ parameters:
 jobs:
   setup_env:
     machine: true
-    name: Setup CircleCi client environment
+    description: Setup CircleCi client environment
     steps:
       - checkout
       - attach_workspace:
@@ -53,11 +53,11 @@ workflows:
   build_and_test:
     jobs:
       - setup_env
-      - build_container
-          requires
+      - build_container:
+          requires:
             - setup_env
-      - run_container
-          requires
+      - run_container:
+          requires:
             - setup_env
             - build_container
 
