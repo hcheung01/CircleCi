@@ -61,7 +61,7 @@ jobs:
           paths:
             - ./image2.tar
 
-  run_container:
+  retrieve_images:
     machine: true
     description: Fan in with build_container and build_container2
     steps:
@@ -88,7 +88,7 @@ workflows:
       - build_container2:
           requires:
             - setup_env
-      - run_container:
+      - retrieve_images:
           requires:
             - build_container
             - build_container2
