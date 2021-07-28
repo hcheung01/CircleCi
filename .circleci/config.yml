@@ -1,0 +1,19 @@
+version: 2.1
+
+jobs:
+  build_image:
+    parameters:
+      image_name:
+        type: string
+        default: my_default_test_image
+    machine: true
+    steps:
+      - checkout
+      - run: DOCKER_BUILDKIT=1 docker build -t << parameters.image_name  >> .
+      - run: docker info
+
+run workflows:
+  workflow:
+    jobs:
+      - build_image:
+          image_name: my_test_image_from_workflows
