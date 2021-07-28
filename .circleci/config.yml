@@ -69,7 +69,7 @@ jobs:
     machine: true
     description: Fan in with build_container and build_container2
     steps:
-      - attch_workspace:
+      - attach_workspace:
         at: .
       - run: docker images
       - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
