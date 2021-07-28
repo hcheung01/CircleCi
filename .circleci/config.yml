@@ -61,7 +61,7 @@ jobs:
           paths:
             - ./image2.tar
 
-  retrieve_images:
+  test_containers:
     machine: true
     description: Fan in with build_container and build_container2
     steps:
@@ -74,10 +74,13 @@ jobs:
           name: Load archived Docker image2
           command: docker load -i /tmp/workspace/image2.tar
       - run: docker images
-      - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
-      - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
-
-
+      - run: 
+          name: Testing First Container
+          command: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+      - run:
+          name: Testing Second Container
+          command: docker run -it --rm << pipeline.parameters.image-name >>2:<<  pipeline.parameters.image-tag  >>
+          
 workflows:
   build_and_test:
     jobs:
@@ -88,10 +91,11 @@ workflows:
       - build_container2:
           requires:
             - setup_env
-      - retrieve_images:
+      - test_containers:
           requires:
             - build_container
             - build_container2
+
 
 
         
