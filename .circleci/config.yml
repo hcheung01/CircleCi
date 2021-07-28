@@ -1,20 +1,26 @@
 version: 2.1
 
+parameters:
+  image_name:
+    type: string
+    default: "latest"
+
 jobs:
-  build_image:
-    parameters:
-      image_name:
-        type: string
-        default: my_test_image
+  build_container:
     machine: true
     steps:
       - checkout
       - run: whoami
-      - run: DOCKER_BUILDKIT=1 docker build -t << parameters.image_name  >> .
+      - run: DOCKER_BUILDKIT=1 docker build -t << pipeline.parameters.image-tag >> .
       - run: docker info
       - run: docker images
+  run_container:
+    steps:
+      - run: docker run -it --rm << pipeline.parameters.image-tag >>
+
+
 workflows:
   workflow:
     jobs:
-      - build_image:
-          image_name: my_test_image_from_workflows
+      - build_container:
+      - run_container:
