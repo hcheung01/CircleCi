@@ -81,13 +81,9 @@ jobs:
           name: Testing Second Container
           command: docker run -it --rm << pipeline.parameters.image-name >>2:<<  pipeline.parameters.image-tag  >>
 
-  test_docker_hub:
-    description: Pulling images from my Docker Hub using credentials and CircleCi Context
-    docker:
-      - image: hcheung01/portfolio_website:latest
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+  push_image:
+    description: Pushing tar images to Docker Hub registry using CircleCi Context
+    machine: true
     steps:
       - checkout
       - attach_workspace:
@@ -121,7 +117,7 @@ workflows:
           requires:
             - build_container
             - build_container2
-      - test_docker_hub:
+      - push_image:
           requires:
             - build_container
 
