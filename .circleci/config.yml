@@ -89,14 +89,14 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Pull image.tar from build image job's workspace, unpack and push to Docker hub
+          name: Pull image.tar from build_image job's workspace, unpack and push to remote Docker hub, save image.tar to artifact db
           command: |
             docker load -i /tmp/workspace/image.tar
             docker images
-            docker tag << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> $DOCKER_USERNAME/circleci/circleci_image:v1.0
+            docker tag << pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> circleci/circleci_image:v1.0
             docker images
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
-            docker image push $DOCKER_USERNAME/circleci/circleci_image:v1.0
+            docker image push circleci/circleci_image:v1.0
             docker image ls -a $DOCKER_USERNAME/circleci
       - store_artifacts:
           path: /tmp/workspace/image.tar
