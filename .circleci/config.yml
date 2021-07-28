@@ -25,12 +25,12 @@ jobs:
 
 
 workflows:
-  workflow:
+  build_and_test:
     jobs:
       - build_container
       - run_container:
-        requires:
-          - build_container
+          requires:
+            - build_container
 
 
         
