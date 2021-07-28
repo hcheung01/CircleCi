@@ -16,9 +16,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run: pip install --upgrade pip
       - run:
           command: |
-            pip install --upgrade pip
             pip install virtualenv
             virtualenv -p python3 myEnv
             source myEnv/bin/activate
