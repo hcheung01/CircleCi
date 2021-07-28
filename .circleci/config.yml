@@ -63,7 +63,7 @@ jobs:
 
   test_containers:
     machine: true
-    description: Fan in with build_container and build_container2
+    description: Fan in from build_container and build_container2. Run containers python application and unit-test math operations
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -103,7 +103,7 @@ jobs:
             docker image ls -a $DOCKER_USERNAME/circleci
       - setup_remote_docker:
           version: "20.10.6"
-          docker_layer_caching: true
+          docker_layer_caching: false
       - store_artifacts:
           path: /tmp/workspace/image.tar
 
