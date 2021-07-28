@@ -21,6 +21,7 @@ jobs:
     machine: true
     steps:
       - run: echo << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
+      - run: docker images
       - run: docker run -it --rm << pipeline.parameters.image-name >>:<<  pipeline.parameters.image-tag  >>
 
 
