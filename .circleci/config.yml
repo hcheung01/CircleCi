@@ -23,7 +23,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - assets
+            - ./assets
       - run:
           command: |
             echo "Setup Environment Stage"
@@ -39,10 +39,8 @@ jobs:
       - run:
           name: checking if asset directory and files is attached to workspace
           command: |
-            cat assets/echo-output
+            cat /tmp/echo-output
             ls *
-            ls assets
-
 
   build_container:
     machine: true
