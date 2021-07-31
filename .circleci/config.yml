@@ -35,12 +35,13 @@ jobs:
       - checkout
       - run: ls
       - attach_workspace:
-          at: assets
+          at: /tmp/assets
       - run:
           name: checking if asset directory and files is attached to workspace
           command: |
-            cat /tmp/echo-output
+            cat /tmp/assets/echo-output
             ls *
+            ls /tmp/*
 
   build_container:
     machine: true
