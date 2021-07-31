@@ -109,15 +109,15 @@ workflows:
       - build_container:
           requires:
             - setup_env
-      - build_container2:
-          requires:
-            - setup_env
-      - test_containers:
-          requires:
-            - build_container
-            - build_container2
-      - push_image:
-          context:
-            docker
-          requires:
-            - build_container
+      # - build_container2:
+      #     requires:
+      #       - setup_env
+      # - test_containers:
+      #     requires:
+      #       - build_container
+      #       - build_container2
+      # - push_image:
+      #     context:
+      #       docker
+      #     requires:
+      #       - build_container
