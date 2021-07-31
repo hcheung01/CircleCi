@@ -41,9 +41,7 @@ jobs:
           name: checking if asset directory and files is attached to workspace
           command: |
             pwd
-            cat /tmp/assets/echo-output
-            ls *
-            ls /tmp/*
+            ls
 
   build_container:
     machine: true
