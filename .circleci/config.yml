@@ -20,6 +20,7 @@ jobs:
             echo "hello output" > assets/echo-output
             ls assets
             cat assets/echo-output
+            pwd
       - persist_to_workspace:
           root: .
           paths:
@@ -35,10 +36,11 @@ jobs:
       - checkout
       - run: ls
       - attach_workspace:
-          at: /tmp/assets
+          at: ./assets
       - run:
           name: checking if asset directory and files is attached to workspace
           command: |
+            pwd
             cat /tmp/assets/echo-output
             ls *
             ls /tmp/*
