@@ -14,14 +14,33 @@ jobs:
     description: Setup CircleCi client environment
     steps:
       - checkout
-      - attach_workspace:
+      - run:
+          command: |
+            mkdir -p assets
+            echo "hello output" > assets/echo-output
+      - persist_to_workspace:
+          root: .
+          paths:
+            - assets
           at: .
       - run:
           command: |
-            echo "Setup Environment Stage"            
+            echo "Setup Environment Stage"
+
+  attach_files:
+    machine: true
+    description: Get file assets from setup_env job
+    steps:
+      - checkout
+      - run: ls
+      - attach_workspace:
+          at: assets
       - run:
-          command: 
-            man node
+          name: checking if asset directory and files is attached to workspace
+          command: |
+            ls *
+            ls assets
+
   build_container:
     machine: true
     steps:
@@ -108,6 +127,9 @@ workflows:
   build_and_test:
     jobs:
       - setup_env
+      - attach_files:
+          requires:
+            - setup_env
       # - build_container:
       #     requires:
       #       - setup_env
