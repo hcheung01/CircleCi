@@ -22,9 +22,9 @@ jobs:
             cat assets/echo-output
             pwd
       - persist_to_workspace:
-          root: .
+          root: ~/CircleCi 
           paths:
-            - ./assets
+            - assets
       - run:
           command: |
             echo "Setup Environment Stage"
@@ -36,7 +36,7 @@ jobs:
       - checkout
       - run: ls
       - attach_workspace:
-          at: ./assets
+          at: ~/CircleCi/assets
       - run:
           name: checking if asset directory and files is attached to workspace
           command: |
