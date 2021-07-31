@@ -19,7 +19,9 @@ jobs:
       - run:
           command: |
             echo "Setup Environment Stage"            
-              
+      - run:
+          command: 
+            man node
   build_container:
     machine: true
     steps:
@@ -106,9 +108,9 @@ workflows:
   build_and_test:
     jobs:
       - setup_env
-      - build_container:
-          requires:
-            - setup_env
+      # - build_container:
+      #     requires:
+      #       - setup_env
       # - build_container2:
       #     requires:
       #       - setup_env
