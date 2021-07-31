@@ -18,11 +18,12 @@ jobs:
           command: |
             mkdir -p assets
             echo "hello output" > assets/echo-output
+            ls assets
+            cat assets/echo-output
       - persist_to_workspace:
           root: .
           paths:
             - assets
-          at: .
       - run:
           command: |
             echo "Setup Environment Stage"
@@ -38,8 +39,10 @@ jobs:
       - run:
           name: checking if asset directory and files is attached to workspace
           command: |
+            cat assets/echo-output
             ls *
             ls assets
+
 
   build_container:
     machine: true
