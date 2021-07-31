@@ -22,7 +22,7 @@ jobs:
             cat assets/echo-output
             pwd
       - persist_to_workspace:
-          root: ~/CircleCi 
+          root: ~/project 
           paths:
             - assets
       - run:
@@ -36,7 +36,7 @@ jobs:
       - checkout
       - run: ls
       - attach_workspace:
-          at: ~/CircleCi/assets
+          at: ~/project/assets
       - run:
           name: checking if asset directory and files is attached to workspace
           command: |
